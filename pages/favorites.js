@@ -1,8 +1,24 @@
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
+import Card from '../components/Card'; // Import the Card component
 
 const Favorites = () => {
-    const [favorites, setFavorites] = useState([]);
+    const [favorites, setFavorites] = useState(() => {
+        if (typeof window !== "undefined") {
+            return JSON.parse(localStorage.getItem("favorites")) || [];
+        }
+        return [];
+    });
+    const toggleFavorite = (card) => {
+        let updatedFavorites = [];
+        if (favorites.some((fav) => fav.id === card.id)) {
+            updatedFavorites = favorites.filter((fav) => fav.id !== card.id);
+        } else {
+            updatedFavorites = [...favorites, card];
+        }
+        setFavorites(updatedFavorites);
+        localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+    };
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -16,22 +32,15 @@ const Favorites = () => {
     return (
         <>
             <Navbar />
-            <div className="p-8">
+            <div className="p-8  text-slate-700 dark:text-slate-100">
                 <h1 className="text-4xl font-bold">My Favorite Cards</h1>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
                     {favorites.map((card) => (
-                        <div
+                        <Card
                             key={card.id}
-                            className="bg-white dark:bg-gray-800 p-4 rounded shadow"
-                        >
-                            <img
-                                src={card.images.small}
-                                alt={card.name}
-                                className="lazyload w-full h-40 object-contain"
-                            />
-                            <h3 className="text-xl font-bold mt-4">{card.name}</h3>
-                            <p className="mt-2">Points: {card.hp}</p>
-                        </div>
+                            card={card}
+                            favorites={favorites}
+                            toggleFavorite={toggleFavorite} /> // Use the Card component here
                     ))}
                 </div>
             </div>

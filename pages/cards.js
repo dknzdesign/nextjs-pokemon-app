@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Link from 'next/link';
+import Card from '../components/Card'; // Import the Card component
 
 const Cards = () => {
     const [cards, setCards] = useState([]);
@@ -38,33 +39,16 @@ const Cards = () => {
         <>
             <Navbar />
             <div className="p-8">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6  text-slate-700 dark:text-slate-100">
                     {cards.map((card) => (
-                        <div
+                        <Card
                             key={card.id}
-                            className="bg-white dark:bg-gray-800 p-4 rounded shadow"
-                        >
-                            <img
-                                src={card.images.small}
-                                alt={card.name}
-                                className="lazyload w-full h-40 object-contain"
-                            />
-                            <h3 className="text-xl font-bold mt-4">{card.name}</h3>
-                            <p className="mt-2">Points: {card.hp}</p>
-                            <Link href={`/cards/${card.id}`}>
-                                <span className="text-blue-500 mt-2 inline-block">View Details</span>
-                            </Link>
-                            <button
-                                onClick={() => toggleFavorite(card)}
-                                className={`mt-4 ${favorites.some((fav) => fav.id === card.id)
-                                    ? "text-red-500"
-                                    : "text-gray-400"
-                                    }`}
-                            >
-                                ♥
-                            </button>
-                        </div>
+                            card={card}
+                            favorites={favorites}
+                            toggleFavorite={toggleFavorite} /> // Use the Card component here
                     ))}
+
+
                 </div>
                 <div className="flex justify-between mt-8">
                     <button
